@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro Interativo - Adjetivos Opostos</title>
+    <style>
+        :root {
+            --primary: #3A86EF;
+            --primary-hover: #2563EB;
+            --success: #10B981;
+            --danger: #EF4444;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-muted: #64748B;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 720px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Setup Screen */
+        .setup-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .setup-screen h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .setup-screen p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .setup-screen input {
+            width: 80%;
+            max-width: 400px;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border: 2px solid #CBD5E1;
+            border-radius: 12px;
+            margin: 24px 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .setup-screen input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Header Info */
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #F1F5F9;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .patient-badge {
+            background: #E0F2FE;
+            color: #0369A1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #E2E8F0;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 10%;
+            transition: width 0.4s ease;
+        }
+
+        /* Story Card */
+        .story-card {
+            text-align: center;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 260px;
+            background-color: #F8FAFC;
+            border: 2px dashed #CBD5E1;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            transition: opacity 0.3s;
+        }
+
+        .original-text {
+            font-size: 1.35rem;
+            margin-bottom: 20px;
+            background: #EFF6FF;
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 6px solid var(--primary);
+            color: #1E3A8A;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            font-weight: 800;
+            color: #DC2626;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        /* Input Area */
+        .input-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            height: 80px;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border: 2px solid #CBD5E1;
+            border-radius: 12px;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .input-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* Controls & Buttons */
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(58, 134, 239, 0.2);
+        }
+
+        .btn:hover { 
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary { 
+            background-color: #94A3B8; 
+            box-shadow: none;
+        }
+        .btn-secondary:hover { background-color: #64748B; }
+
+        .btn-check {
+            background-color: #10B981;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+        .btn-check:hover { background-color: #059669; }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none;
+            text-align: left;
+        }
+
+        .feedback.correct { 
+            background-color: #DCFCE7; 
+            color: #166534; 
+            border: 1px solid #BBF7D0;
+            display: block; 
+        }
+        .feedback.incorrect { 
+            background-color: #FEE2E2; 
+            color: #991B1B; 
+            border: 1px solid #FECACA;
+            display: block; 
+        }
+
+        .hint-toggle {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-top: 8px;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .hint-toggle:hover { text-decoration: underline; }
+
+        /* Report Screen */
+        .report-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .report-item {
+            border-bottom: 1px solid #E2E8F0;
+            padding: 14px 0;
+            text-align: left;
+        }
+
+        .report-item p {
+            margin: 4px 0;
+        }
+
+        .report-original { color: var(--text-muted); font-size: 0.95rem; }
+        .report-answer { font-weight: 600; color: #1E293B; }
+        .report-expected { color: #059669; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Tela 1: Identificação do Aluno -->
+    <div id="setup-screen" class="setup-screen">
+        <h2>Livro Interativo: Adjetivos Opostos</h2>
+        <p>Bem-vindo(a)! Digite o nome do estudante/paciente para começar:</p>
+        <input type="text" id="patient-name-input" placeholder="Nome do Aluno(a)" autofocus>
+        <br>
+        <button class="btn" onclick="startActivity()">Iniciar Atividade</button>
+    </div>
+
+    <!-- Tela 2: Atividade do Livro -->
+    <div id="book-screen" class="hidden">
+        <div class="header-info">
+            <span class="patient-badge" id="display-patient-name">Aluno: </span>
+            <span id="page-indicator">Página 1 de 10</span>
+        </div>
+
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+
+        <div class="story-card">
+            <div class="image-container">
+                <img id="page-image" src="" alt="Ilustração de apoio visual">
+            </div>
+
+            <div class="original-text" id="original-sentence">
+                <!-- Frase injetada dinamicamente -->
+            </div>
+
+            <div class="input-group">
+                <label for="user-input">Reescreva a frase trocando a palavra em destaque pelo seu **OPOSTO**:</label>
+                <textarea id="user-input" placeholder="Digite a frase reescrita aqui..."></textarea>
+                <div class="hint-toggle" onclick="toggleHint()">💡 Precisa de uma dica do adjetivo oposto?</div>
+                <div id="hint-text" class="hidden" style="color: var(--primary); margin-top: 6px; font-weight: 600; font-size: 0.95rem;"></div>
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="prev-btn" onclick="changePage(-1)">Anterior</button>
+                <button class="btn btn-check" id="check-btn" onclick="validateCurrentPage()">Verificar</button>
+                <button class="btn" id="next-btn" onclick="changePage(1)">Próxima</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela 3: Relatório Final -->
+    <div id="report-screen" class="hidden">
+        <div class="report-header">
+            <h2>Atividade Concluída! 🎉</h2>
+            <p><strong>Estudante/Paciente:</strong> <span id="report-name"></span></p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;">
+        <div id="report-content"></div>
+        <br>
+        <div style="text-align: center;">
+            <button class="btn" onclick="window.print()">🖨️ Salvar ou Imprimir PDF</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dados das 10 páginas da narrativa
+    const pagesData = [
+        {
+            original: "O gato da história é muito <span class='highlight'>GRANDE</span>.",
+            targetAdjective: "grande",
+            antonym: "pequeno",
+            sentenceTemplate: "O gato da história é muito pequeno.",
+            image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O dia na praia estava muito <span class='highlight'>QUENTE</span>.",
+            targetAdjective: "quente",
+            antonym: "frio",
+            sentenceTemplate: "O dia na praia estava muito frio.",
+            image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O menino ficou <span class='highlight'>TRISTE</span> com a notícia.",
+            targetAdjective: "triste",
+            antonym: "feliz",
+            sentenceTemplate: "O menino ficou feliz com a notícia.",
+            image: "https://images.unsplash.com/photo-1499209974431-9dac3ada00d7?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "A caixa de brinquedos é bastante <span class='highlight'>PESADA</span>.",
+            targetAdjective: "pesada",
+            antonym: "leve",
+            sentenceTemplate: "A caixa de brinquedos é bastante leve.",
+            image: "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O caminho até a escola é <span class='highlight'>LONGO</span>.",
+            targetAdjective: "longo",
+            antonym: "curto",
+            sentenceTemplate: "O caminho até a escola é curto.",
+            image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O casaco do menino está <span class='highlight'>SUJO</span>.",
+            targetAdjective: "sujo",
+            antonym: "limpo",
+            sentenceTemplate: "O casaco do menino está limpo.",
+            image: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "A porta da casa ficou <span class='highlight'>ABERTA</span>.",
+            targetAdjective: "aberta",
+            antonym: "fechada",
+            sentenceTemplate: "A porta da casa ficou fechada.",
+            image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O coelho correu muito <span class='highlight'>RÁPIDO</span>.",
+            targetAdjective: "rápido",
+            antonym: "devagar",
+            sentenceTemplate: "O coelho correu muito devagar.",
+            image: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O prédio no centro da cidade é <span class='highlight'>ALTO</span>.",
+            targetAdjective: "alto",
+            antonym: "baixo",
+            sentenceTemplate: "O prédio no centro da cidade é baixo.",
+            image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            original: "O café da manhã estava muito <span class='highlight'>DOCE</span>.",
+            targetAdjective: "doce",
+            antonym: "amargo",
+            sentenceTemplate: "O café da manhã estava muito amargo.",
+            image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80"
+        }
+    ];
+
+    let currentPage = 0;
+    let patientName = "";
+    let userAnswers = new Array(pagesData.length).fill("");
+
+    function startActivity() {
+        const nameInput = document.getElementById('patient-name-input').value.trim();
+        if (!nameInput) {
+            alert("Por favor, digite o nome do aluno/paciente para prosseguir.");
+            return;
+        }
+        patientName = nameInput;
+        document.getElementById('display-patient-name').innerText = "Aluno(a): " + patientName;
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('book-screen').classList.remove('hidden');
+        renderPage();
+    }
+
+    function renderPage() {
+        const data = pagesData[currentPage];
+        
+        document.getElementById('page-indicator').innerText = `Página ${currentPage + 1} de ${pagesData.length}`;
+        document.getElementById('progress-fill').style.width = `${((currentPage + 1) / pagesData.length) * 100}%`;
+        document.getElementById('original-sentence').innerHTML = data.original;
+        document.getElementById('page-image').src = data.image;
+        document.getElementById('user-input').value = userAnswers[currentPage] || "";
+        
+        document.getElementById('feedback').className = "feedback";
+        document.getElementById('feedback').innerText = "";
+        document.getElementById('hint-text').classList.add('hidden');
+        document.getElementById('hint-text').innerText = `O oposto de "${data.targetAdjective}" é "${data.antonym}".`;
+
+        document.getElementById('prev-btn').disabled = currentPage === 0;
+        
+        if (currentPage === pagesData.length - 1) {
+            document.getElementById('next-btn').innerText = "Finalizar";
+        } else {
+            document.getElementById('next-btn').innerText = "Próxima";
+        }
+    }
+
+    function toggleHint() {
+        const hintEl = document.getElementById('hint-text');
+        hintEl.classList.toggle('hidden');
+    }
+
+    function validateCurrentPage() {
+        const input = document.getElementById('user-input').value.trim();
+        const feedbackEl = document.getElementById('feedback');
+        const data = pagesData[currentPage];
+
+        userAnswers[currentPage] = input;
+
+        if (!input) {
+            feedbackEl.className = "feedback incorrect";
+            feedbackEl.innerText = "Por favor, digite a frase reescrita antes de verificar.";
+            return false;
+        }
+
+        const containsAntonym = input.toLowerCase().includes(data.antonym.toLowerCase());
+
+        if (containsAntonym) {
+            feedbackEl.className = "feedback correct";
+            feedbackEl.innerText = "Excelente! Você utilizou o adjetivo oposto corretamente.";
+            return true;
+        } else {
+            feedbackEl.className = "feedback incorrect";
+            feedbackEl.innerText = `Atenção: certifique-se de substituir o adjetivo pelo seu oposto ("${data.antonym}").`;
+            return false;
+        }
+    }
+
+    function changePage(direction) {
+        userAnswers[currentPage] = document.getElementById('user-input').value.trim();
+
+        if (direction === 1 && currentPage === pagesData.length - 1) {
+            showReport();
+            return;
+        }
+
+        currentPage += direction;
+        if (currentPage < 0) currentPage = 0;
+        if (currentPage >= pagesData.length) currentPage = pagesData.length - 1;
+
+        renderPage();
+    }
+
+    function showReport() {
+        document.getElementById('book-screen').classList.add('hidden');
+        document.getElementById('report-screen').classList.remove('hidden');
+        document.getElementById('report-name').innerText = patientName;
+
+        const reportContainer = document.getElementById('report-content');
+        reportContainer.innerHTML = "";
+
+        pagesData.forEach((data, index) => {
+            const userAnswer = userAnswers[index] || "<em>Sem resposta</em>";
+            const item = document.createElement('div');
+            item.className = "report-item";
+            item.innerHTML = `
+                <p class="report-original"><strong>Página ${index + 1}:</strong> ${data.original.replace(/<[^>]*>?/gm, '')}</p>
+                <p class="report-answer">Resposta do Aluno: "${userAnswer}"</p>
+                <p class="report-expected">Exemplo esperado: "${data.sentenceTemplate}"</p>
+            `;
+            reportContainer.appendChild(item);
+        });
+    }
+</script>
+</body>
+</html>
+`
