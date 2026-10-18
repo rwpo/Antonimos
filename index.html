@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleção Mágica dos Opostos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti Library for playful rewards -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandPurple: '#8B5CF6',
+                        brandPink: '#EC4899',
+                        brandYellow: '#F59E0B',
+                        brandBlue: '#3B82F6',
+                        brandGreen: '#10B981',
+                        brandIndigo: '#6366F1'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%);
+            min-height: 100vh;
+        }
+
+        .card-bounce {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .bounce-btn {
+            transition: all 0.2s ease;
+        }
+
+        .bounce-btn:hover {
+            transform: scale(1.03);
+        }
+
+        .bounce-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Glassmorphism container */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border: 4px solid #F3E8FF;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .glass-card {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-3 sm:p-6 text-gray-800 min-h-screen">
+
+    <div class="glass-card w-full max-w-3xl rounded-3xl shadow-2xl p-5 sm:p-8 card-bounce my-auto relative overflow-hidden">
+        
+        <!-- DECORATIVE EMOJIS -->
+        <div class="absolute -top-4 -right-4 text-5xl opacity-20 pointer-events-none select-none">✨</div>
+        <div class="absolute -bottom-4 -left-4 text-5xl opacity-20 pointer-events-none select-none">🎈</div>
+
+        <!-- ======================================================== -->
+        <!-- TELA 1: IDENTIFICAÇÃO E ESCOLHA DO LIVRO                -->
+        <!-- ======================================================== -->
+        <div id="setup-screen" class="text-center py-2">
+            <div class="inline-block bg-yellow-300 text-yellow-900 font-fredoka text-sm sm:text-base px-4 py-1.5 rounded-full font-bold mb-3 shadow-sm transform -rotate-1 flex items-center justify-center gap-2 mx-auto w-fit">
+                <span>🤟 Língua Portuguesa Bilingue (Libras / Português)</span>
+            </div>
+            
+            <h1 class="font-fredoka text-3xl sm:text-4xl text-brandPurple font-bold mb-2">
+                Coleção Mágica dos Opostos 🖐️📖
+            </h1>
+            
+            <p class="text-gray-600 text-sm sm:text-base mb-4 font-bold">
+                Aprenda os adjetivos opostos com apoio visual em Libras e imagens! Escreva seu nome para começar:
+            </p>
+
+            <div class="max-w-md mx-auto mb-4 text-left">
+                <label for="patient-name-input" class="block text-sm font-bold text-gray-700 mb-1 ml-1">
+                    ✏️ Nome do(a) Estudante Surdo(a) / Aluno(a):
+                </label>
+                <input type="text" id="patient-name-input" 
+                    class="w-full px-4 py-3 text-base font-bold border-3 border-purple-300 rounded-2xl focus:border-brandPurple focus:ring-4 focus:ring-purple-200 outline-none transition-all shadow-inner text-gray-700" 
+                    placeholder="Escreva seu nome aqui..." autofocus>
+            </div>
+
+            <!-- Seleção do Livro -->
+            <div class="mb-6 text-left">
+                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">
+                    📚 Escolha a História (Textos Adaptados Visualmente):
+                </label>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Livro 1 -->
+                    <button type="button" onclick="window.selectBook(0)" id="book-card-0" 
+                        class="book-select-btn p-3.5 border-2 border-purple-200 rounded-2xl text-left hover:border-brandPurple transition-all cursor-pointer bg-purple-50 flex items-start gap-3">
+                        <span class="text-3xl">🐾</span>
+                        <div>
+                            <div class="font-fredoka font-bold text-brandPurple text-base">1. Animais e Opostos 🐶</div>
+                            <div class="text-xs font-semibold text-gray-500">Adjetivos Básicos Concretos</div>
+                        </div>
+                    </button>
+
+                    <!-- Livro 2 -->
+                    <button type="button" onclick="window.selectBook(1)" id="book-card-1" 
+                        class="book-select-btn p-3.5 border-2 border-purple-200 rounded-2xl text-left hover:border-brandPurple transition-all cursor-pointer bg-white flex items-start gap-3">
+                        <span class="text-3xl">🏰</span>
+                        <div>
+                            <div class="font-fredoka font-bold text-brandPurple text-base">2. O Reino e Sensações 👑</div>
+                            <div class="text-xs font-semibold text-gray-500">Adjetivos Visuais e Expressivos</div>
+                        </div>
+                    </button>
+
+                    <!-- Livro 3 -->
+                    <button type="button" onclick="window.selectBook(2)" id="book-card-2" 
+                        class="book-select-btn p-3.5 border-2 border-purple-200 rounded-2xl text-left hover:border-brandPurple transition-all cursor-pointer bg-white flex items-start gap-3">
+                        <span class="text-3xl">🚀</span>
+                        <div>
+                            <div class="font-fredoka font-bold text-brandPurple text-base">3. Viagem Espacial 🪐</div>
+                            <div class="text-xs font-semibold text-purple-700 font-bold">Opostos do Espaço 🌟</div>
+                        </div>
+                    </button>
+
+                    <!-- Livro 4 -->
+                    <button type="button" onclick="window.selectBook(3)" id="book-card-3" 
+                        class="book-select-btn p-3.5 border-2 border-purple-200 rounded-2xl text-left hover:border-brandPurple transition-all cursor-pointer bg-white flex items-start gap-3">
+                        <span class="text-3xl">🕵️</span>
+                        <div>
+                            <div class="font-fredoka font-bold text-brandPurple text-base">4. Detetive das Cores e Formas 🔍</div>
+                            <div class="text-xs font-semibold text-purple-700 font-bold">Adjetivos de Formato e Estado ⭐</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <button type="button" onclick="window.startActivity()" 
+                class="bounce-btn w-full max-w-md bg-gradient-to-r from-brandPurple to-brandPink text-white font-fredoka text-xl py-3.5 px-8 rounded-2xl font-bold shadow-lg transition-all flex items-center justify-center gap-3 mx-auto cursor-pointer">
+                <span>Começar Leitura Bilingue</span>
+                <i class="fa-solid fa-hands-asl-interpreting text-yellow-300 text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- TELA 2: PÁGINAS DO LIVRO                                 -->
+        <!-- ======================================================== -->
+        <div id="book-screen" class="hidden">
+            <!-- Cabeçalho do Livro -->
+            <div class="flex flex-wrap items-center justify-between border-b-2 border-purple-100 pb-3 mb-4 gap-2">
+                <div class="flex items-center gap-2 bg-purple-100 px-3 py-1.5 rounded-full">
+                    <span class="text-lg">👤</span>
+                    <span id="display-patient-name" class="font-bold text-brandPurple text-xs sm:text-sm"></span>
+                </div>
+
+                <div class="flex items-center gap-2 bg-indigo-100 px-3 py-1.5 rounded-full">
+                    <span id="display-book-title" class="font-bold text-brandIndigo text-xs sm:text-sm"></span>
+                </div>
+                
+                <div class="flex items-center gap-2 bg-yellow-100 px-3 py-1.5 rounded-full">
+                    <span class="text-lg">📖</span>
+                    <span id="page-indicator" class="font-bold text-yellow-800 text-xs sm:text-sm">Texto 1 de 10</span>
+                </div>
+            </div>
+
+            <!-- Barra de Progresso -->
+            <div class="w-full bg-gray-200 h-3.5 rounded-full mb-4 overflow-hidden p-0.5 border border-purple-200">
+                <div id="progress-fill" class="bg-gradient-to-r from-brandPurple via-brandPink to-brandYellow h-full rounded-full transition-all duration-500 w-[10%]"></div>
+            </div>
+
+            <!-- Card do Texto Expandido (Sem Imagens) -->
+            <div class="bg-purple-50/60 rounded-2xl p-4 sm:p-5 border-2 border-purple-100 mb-4">
+                <!-- Texto Original de 5 Linhas -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border-l-8 border-brandPurple mb-4">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-align-left text-brandPurple"></i>
+                        <span>Texto Original (Todas as 5 linhas têm adjetivos destacados):</span>
+                    </p>
+                    <div id="original-sentence" class="text-base sm:text-lg font-semibold text-gray-800 leading-relaxed space-y-1">
+                        <!-- Texto de 5 linhas injetado via JS -->
+                    </div>
+                </div>
+
+                <!-- Campo de Reescrita Completa -->
+                <div class="text-left mb-2">
+                    <label for="user-input" class="block text-xs sm:text-sm font-extrabold text-gray-700 mb-1 flex items-center gap-1.5">
+                        <span id="instruction-label">✏️ Reescreva as 5 LINHAS trocando os adjetivos de TODAS as linhas pelos seus OPOSTOS:</span>
+                    </label>
+                    <textarea id="user-input" rows="5" 
+                        class="w-full p-3.5 text-base sm:text-lg font-bold border-2 border-purple-200 rounded-xl focus:border-brandPurple focus:ring-4 focus:ring-purple-100 outline-none transition-all shadow-inner resize-none text-gray-800 leading-relaxed"
+                        placeholder="Reescreva o texto completo alterando os adjetivos destacados de cada linha..."></textarea>
+                    
+                    <!-- Botão de Dica -->
+                    <div class="mt-2 flex items-center justify-between">
+                        <button type="button" onclick="window.toggleHint()" class="text-xs font-bold text-brandPurple hover:text-brandPink flex items-center gap-1.5 transition-colors cursor-pointer">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 text-sm"></i>
+                            <span>Precisa de uma dica sobre os opostos de todas as linhas? Clique aqui!</span>
+                        </button>
+                    </div>
+
+                    <!-- Caixa de Dica Expansível -->
+                    <div id="hint-box" class="hidden mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-xl text-xs sm:text-sm text-yellow-900 font-bold flex items-center gap-2">
+                        <span class="text-lg">💡</span>
+                        <span id="hint-text"></span>
+                    </div>
+                </div>
+
+                <!-- Feedback de Validação -->
+                <div id="feedback" class="hidden rounded-xl p-3 font-bold text-xs sm:text-sm transition-all mb-1"></div>
+            </div>
+
+            <!-- Navegação e Validação -->
+            <div class="flex items-center justify-between gap-2 mt-3">
+                <button id="prev-btn" type="button" onclick="window.changePage(-1)" 
+                    class="bounce-btn bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-xl hover:bg-gray-300 transition-all flex items-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="hidden sm:inline">Anterior</span>
+                </button>
+
+                <button id="check-btn" type="button" onclick="window.validateCurrentPage()" 
+                    class="bounce-btn bg-brandGreen text-white font-fredoka px-5 py-2.5 rounded-xl shadow-md hover:bg-emerald-600 transition-all flex items-center gap-2 text-sm sm:text-base cursor-pointer">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Verificar Texto</span>
+                </button>
+
+                <button id="next-btn" type="button" onclick="window.changePage(1)" 
+                    class="bounce-btn bg-brandPurple text-white font-fredoka px-5 py-2.5 rounded-xl shadow-md hover:bg-purple-700 transition-all flex items-center gap-2 text-sm sm:text-base cursor-pointer">
+                    <span id="next-btn-text">Próximo</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- TELA 3: RELATÓRIO FINAL                                  -->
+        <!-- ======================================================== -->
+        <div id="report-screen" class="hidden text-left">
+            <div class="text-center mb-4">
+                <div class="inline-block bg-green-100 text-green-800 font-fredoka text-sm px-4 py-1 rounded-full font-bold mb-2">
+                    🎉 Parabéns! Livro Concluído!
+                </div>
+                <h2 class="font-fredoka text-2xl sm:text-3xl font-bold text-brandPurple">Relatório Mágico de Aprendizagem</h2>
+                <p class="text-gray-600 font-semibold text-sm mt-1">Estudante: <span id="report-patient-name" class="text-brandPink font-bold underline"></span></p>
+                <p class="text-xs sm:text-sm font-bold text-gray-500 mt-0.5">Livro Lido: <span id="report-book-name" class="text-brandIndigo font-bold"></span></p>
+                <p class="text-xs sm:text-sm font-bold text-gray-500 mt-0.5">Pontuação Final: <span id="report-score" class="text-brandGreen text-base font-bold"></span></p>
+            </div>
+
+            <div id="report-content" class="space-y-3 max-h-80 overflow-y-auto pr-2 mb-5">
+                <!-- Injetado dinamicamente via JS -->
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 no-print">
+                <button type="button" onclick="window.print()" 
+                    class="bounce-btn w-full sm:w-auto bg-brandBlue text-white font-fredoka px-5 py-3 rounded-xl shadow-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Salvar / Imprimir PDF</span>
+                </button>
+
+                <button type="button" onclick="window.restartBook()" 
+                    class="bounce-btn w-full sm:w-auto bg-gray-200 text-gray-700 font-fredoka px-5 py-3 rounded-xl hover:bg-gray-300 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Escolher Outro Livro</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS DA APLICAÇÃO -->
+    <script>
+        const booksCollection = [
+            // -------------------------------------------------------------
+            // LIVRO 1: AVENTURAS DOS ANIMAIS (5 Adjetivos por texto - 1 por linha)
+            // -------------------------------------------------------------
+            {
+                id: 1,
+                title: "🐾 Aventuras dos Animais",
+                pages: [
+                    {
+                        lines: [
+                            "Em uma manhã <span class='text-brandPink underline font-extrabold'>ENSOLARADA</span> no quintal, o gatinho saiu.",
+                            "Ele observava os passarinhos em árvores muito <span class='text-brandPink underline font-extrabold'>ALTAS</span>.",
+                            "De repente, surgiu um cachorro de porte bem <span class='text-brandPink underline font-extrabold'>GRANDE</span>.",
+                            "O cão latiu forte e correu de forma bastante <span class='text-brandPink underline font-extrabold'>RÁPIDA</span>.",
+                            "O felino correu para se esconder na casa <span class='text-brandPink underline font-extrabold'>ESCURA</span>."
+                        ],
+                        targets: [
+                            { original: "ensolarada", antonyms: ["nublada", "chuvosa"] },
+                            { original: "altas", antonyms: ["baixas"] },
+                            { original: "grande", antonyms: ["pequeno", "pequenino"] },
+                            { original: "rápida", antonyms: ["lenta", "devagar"] },
+                            { original: "escura", antonyms: ["clara", "iluminada"] }
+                        ],
+                        keywords: ["manha", "gatinho", "passarinhos", "cachorro", "casa"],
+                        exampleSolution: "Em uma manhã nublada no quintal, o gatinho saiu.\nEle observava os passarinhos em árvores muito baixas.\nDe repente, surgiu um cachorro de porte bem pequeno.\nO cão latiu forte e correu de forma bastante lenta.\nO felino correu para se esconder na casa clara.",
+                        hint: "Substitua: 1. ENSOLARADA -> NUBLADA | 2. ALTAS -> BAIXAS | 3. GRANDE -> PEQUENO | 4. RÁPIDA -> LENTA | 5. ESCURA -> CLARA."
+                    },
+                    {
+                        lines: [
+                            "A caminhada pela floresta reservava uma surpresa <span class='text-brandPink underline font-extrabold'>BOA</span>.",
+                            "Perto do rio cristalino, vivia um urso muito <span class='text-brandPink underline font-extrabold'>BRAVO</span>.",
+                            "Os pequenos animais tinham medo de sua caverna <span class='text-brandPink underline font-extrabold'>SUJA</span>.",
+                            "No entanto, ele ajudava uma tartaruga bastante <span class='text-brandPink underline font-extrabold'>PESADA</span>.",
+                            "Juntos, eles viviam felizes naquela mata <span class='text-brandPink underline font-extrabold'>TRANQUILA</span>."
+                        ],
+                        targets: [
+                            { original: "boa", antonyms: ["ruim", "ma"] },
+                            { original: "bravo", antonyms: ["manso", "calmo", "amigavel"] },
+                            { original: "suja", antonyms: ["limpa"] },
+                            { original: "pesada", antonyms: ["leve"] },
+                            { original: "tranquila", antonyms: ["agitada", "barulhenta"] }
+                        ],
+                        keywords: ["caminhada", "urso", "animais", "tartaruga", "mata"],
+                        exampleSolution: "A caminhada pela floresta reservava uma surpresa ruim.\nPerto do rio cristalino, vivia um urso muito manso.\nOs pequenos animais tinham medo de sua caverna limpa.\nNo entanto, ele ajudava uma tartaruga bastante leve.\nJuntos, eles viviam felizes naquela mata agitada.",
+                        hint: "Substitua: 1. BOA -> RUIM | 2. BRAVO -> MANSO | 3. SUJA -> LIMPA | 4. PESADA -> LEVE | 5. TRANQUILA -> AGITADA."
+                    },
+                    {
+                        lines: [
+                            "O sol brilhou no alto daquele parque bastante <span class='text-brandPink underline font-extrabold'>BONITO</span>.",
+                            "No galho, um pássaro colorido permanecia bem <span class='text-brandPink underline font-extrabold'>QUIETO</span>.",
+                            "Lá embaixo, o coelho pulava pela grama <span class='text-brandPink underline font-extrabold'>MOLHADA</span>.",
+                            "A pelagem do coelhinho era incrivelmente <span class='text-brandPink underline font-extrabold'>MACIA</span>.",
+                            "As crianças achavam o passeio no jardim bem <span class='text-brandPink underline font-extrabold'>DIVERTIDO</span>."
+                        ],
+                        targets: [
+                            { original: "bonito", antonyms: ["feio"] },
+                            { original: "quieto", antonyms: ["agitado", "barulhento"] },
+                            { original: "molhada", antonyms: ["seca"] },
+                            { original: "macia", antonyms: ["dura", "aspera", "áspera"] },
+                            { original: "divertido", antonyms: ["chato", "tedioso"] }
+                        ],
+                        keywords: ["sol", "passaro", "coelho", "pelagem", "criancas"],
+                        exampleSolution: "O sol brilhou no alto daquele parque bastante feio.\nNo galho, um pássaro colorido permanecia bem agitado.\nLá embaixo, o coelho pulava pela grama seca.\nA pelagem do coelhinho era incrivelmente dura.\nAs crianças achavam o passeio no jardim bem chato.",
+                        hint: "Substitua: 1. BONITO -> FEIO | 2. QUIETO -> AGITADO | 3. MOLHADA -> SECA | 4. MACIA -> DURA | 5. DIVERTIDO -> CHATO."
+                    },
+                    {
+                        lines: [
+                            "Na savana, o dia amanheceu muito <span class='text-brandPink underline font-extrabold'>QUENTE</span>.",
+                            "Um velho elefante caminhava, mostrando-se muito <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "Ao seu lado, a girafa comia em uma árvore <span class='text-brandPink underline font-extrabold'>ALTA</span>.",
+                            "O leão descansava porque estava bastante <span class='text-brandPink underline font-extrabold'>GORDO</span>.",
+                            "A brisa da tarde trazia um momento muito <span class='text-brandPink underline font-extrabold'>CALMO</span>."
+                        ],
+                        targets: [
+                            { original: "quente", antonyms: ["frio", "gelado"] },
+                            { original: "forte", antonyms: ["fraco"] },
+                            { original: "alta", antonyms: ["baixa"] },
+                            { original: "gordo", antonyms: ["magro"] },
+                            { original: "calmo", antonyms: ["agitado"] }
+                        ],
+                        keywords: ["savana", "elefante", "girafa", "leao", "brisa"],
+                        exampleSolution: "Na savana, o dia amanheceu muito frio.\nUm velho elefante caminhava, mostrando-se muito fraco.\nAo seu lado, a girafa comia em uma árvore baixa.\nO leão descansava porque estava bastante magro.\nA brisa da tarde trazia um momento muito agitado.",
+                        hint: "Substitua: 1. QUENTE -> FRIO | 2. FORTE -> FRACO | 3. ALTA -> BAIXA | 4. GORDO -> MAGRO | 5. CALMO -> AGITADO."
+                    },
+                    {
+                        lines: [
+                            "A floresta estava cheia de sons em um dia <span class='text-brandPink underline font-extrabold'>ALEGRE</span>.",
+                            "Subindo nos galhos, o macaco era bastante <span class='text-brandPink underline font-extrabold'>LIGEIRO</span>.",
+                            "Ele pulava pelas trepadeiras de forma muito <span class='text-brandPink underline font-extrabold'>CORAJOSA</span>.",
+                            "Abaixo dele, a coruja observava com o olhar <span class='text-brandPink underline font-extrabold'>SÉRIO</span>.",
+                            "Todos os bichos aproveitavam a sombra <span class='text-brandPink underline font-extrabold'>FRESCA</span>."
+                        ],
+                        targets: [
+                            { original: "alegre", antonyms: ["triste"] },
+                            { original: "ligeiro", antonyms: ["lento", "devagar"] },
+                            { original: "corajosa", antonyms: ["medrosa", "covarde"] },
+                            { original: "sério", antonyms: ["brincalhao", "engracado", "brincalhão"] },
+                            { original: "fresca", antonyms: ["quente"] }
+                        ],
+                        keywords: ["floresta", "macaco", "trepadeiras", "coruja", "bichos"],
+                        exampleSolution: "A floresta estava cheia de sons em um dia triste.\nSubindo nos galhos, o macaco era bastante lento.\nEle pulava pelas trepadeiras de forma muito medrosa.\nAbaixo dele, a coruja observava com o olhar brincalhão.\nTodos os bichos aproveitavam a sombra quente.",
+                        hint: "Substitua: 1. ALEGRE -> TRISTE | 2. LIGEIRO -> LENTO | 3. CORAJOSA -> MEDROSA | 4. SÉRIO -> BRINCALHÃO | 5. FRESCA -> QUENTE."
+                    },
+                    {
+                        lines: [
+                            "O sítio do vovô amanheceu em um clima <span class='text-brandPink underline font-extrabold'>LUMINOSO</span>.",
+                            "O cavalo corria feliz pela cerca <span class='text-brandPink underline font-extrabold'>NOVA</span>.",
+                            "Enquanto isso, o porquinho no lamaçal parecia <span class='text-brandPink underline font-extrabold'>PESADO</span>.",
+                            "Perto do celeiro, o cão latia de modo bem <span class='text-brandPink underline font-extrabold'>BRAVO</span>.",
+                            "A vida no campo trazia um sentimento bastante <span class='text-brandPink underline font-extrabold'>DOCE</span>."
+                        ],
+                        targets: [
+                            { original: "luminoso", antonyms: ["escuro"] },
+                            { original: "nova", antonyms: ["velha", "antiga"] },
+                            { original: "pesado", antonyms: ["leve"] },
+                            { original: "bravo", antonyms: ["manso", "calmo"] },
+                            { original: "doce", antonyms: ["amargo", "azedo"] }
+                        ],
+                        keywords: ["sitio", "cavalo", "porquinho", "celeiro", "campo"],
+                        exampleSolution: "O sítio do vovô amanheceu em um clima escuro.\nO cavalo corria feliz pela cerca velha.\nEnquanto isso, o porquinho no lamaçal parecia leve.\nPerto do celeiro, o cão latia de modo bem manso.\nA vida no campo trazia um sentimento bastante amargo.",
+                        hint: "Substitua: 1. LUMINOSO -> ESCURO | 2. NOVA -> VELHA | 3. PESADO -> LEVE | 4. BRAVO -> MANSO | 5. DOCE -> AMARGO."
+                    },
+                    {
+                        lines: [
+                            "Na beira do lago, a água estava muito <span class='text-brandPink underline font-extrabold'>LIMPA</span>.",
+                            "Um peixe prateado nadava de maneira <span class='text-brandPink underline font-extrabold'>RÁPIDA</span>.",
+                            "Ele fugia do pescador em uma barca bastante <span class='text-brandPink underline font-extrabold'>VELHA</span>.",
+                            "O sol brilhava no céu deixando a tarde <span class='text-brandPink underline font-extrabold'>CLARA</span>.",
+                            "Os patos nadavam em um ritmo muito <span class='text-brandPink underline font-extrabold'>TRANQUILO</span>."
+                        ],
+                        targets: [
+                            { original: "limpa", antonyms: ["suja"] },
+                            { original: "rápida", antonyms: ["lenta", "devagar"] },
+                            { original: "velha", antonyms: ["nova"] },
+                            { original: "clara", antonyms: ["escura"] },
+                            { original: "tranquilo", antonyms: ["agitado"] }
+                        ],
+                        keywords: ["lago", "peixe", "pescador", "sol", "patos"],
+                        exampleSolution: "Na beira do lago, a água estava muito suja.\nUm peixe prateado nadava de maneira lenta.\nEle fugia do pescador em uma barca bastante nova.\nO sol brilhava no céu deixando a tarde escura.\nOs patos nadavam em um ritmo muito agitado.",
+                        hint: "Substitua: 1. LIMPA -> SUJA | 2. RÁPIDA -> LENTA | 3. VELHA -> NOVA | 4. CLARA -> ESCURA | 5. TRANQUILO -> AGITADO."
+                    },
+                    {
+                        lines: [
+                            "O jacaré descansava na praia de areia <span class='text-brandPink underline font-extrabold'>FINA</span>.",
+                            "Sua pele verde parecia ser extremamente <span class='text-brandPink underline font-extrabold'>DURA</span>.",
+                            "Um sapinho pulava na pedra de modo bem <span class='text-brandPink underline font-extrabold'>QUIETO</span>.",
+                            "O jacaré permaneceu deitado porque estava <span class='text-brandPink underline font-extrabold'>GORDO</span>.",
+                            "Aquela tarde no rio continuava muito <span class='text-brandPink underline font-extrabold'>AGRADÁVEL</span>."
+                        ],
+                        targets: [
+                            { original: "fina", antonyms: ["grossa"] },
+                            { original: "dura", antonyms: ["macia", "mole"] },
+                            { original: "quieto", antonyms: ["agitado", "barulhento"] },
+                            { original: "gordo", antonyms: ["magro"] },
+                            { original: "agradável", antonyms: ["desagradavel", "desagradável"] }
+                        ],
+                        keywords: ["jacare", "pele", "sapinho", "jacare", "tarde"],
+                        exampleSolution: "O jacaré descansava na praia de areia grossa.\nSua pele verde parecia ser extremamente macia.\nUm sapinho pulava na pedra de modo bem agitado.\nO jacaré permaneceu deitado porque estava magro.\nAquela tarde no rio continuava muito desagradável.",
+                        hint: "Substitua: 1. FINA -> GROSSA | 2. DURA -> MACIA | 3. QUIETO -> AGITADO | 4. GORDO -> MAGRO | 5. AGRADÁVEL -> DESAGRADÁVEL."
+                    },
+                    {
+                        lines: [
+                            "No topo do morro, o vento estava muito <span class='text-brandPink underline font-extrabold'>GELADO</span>.",
+                            "Um jovem lobo uivava com um som bem <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "Ele observava a noite que parecia ser <span class='text-brandPink underline font-extrabold'>LONGA</span>.",
+                            "Mesmo com o frio, a pelagem da raposa era <span class='text-brandPink underline font-extrabold'>MACIA</span>.",
+                            "Todos os animais ficaram em um abrigo <span class='text-brandPink underline font-extrabold'>SEGURO</span>."
+                        ],
+                        targets: [
+                            { original: "gelado", antonyms: ["quente"] },
+                            { original: "forte", antonyms: ["fraco"] },
+                            { original: "longa", antonyms: ["curta"] },
+                            { original: "macia", antonyms: ["dura", "aspera"] },
+                            { original: "seguro", antonyms: ["perigoso"] }
+                        ],
+                        keywords: ["morro", "lobo", "noite", "raposa", "animais"],
+                        exampleSolution: "No topo do morro, o vento estava muito quente.\nUm jovem lobo uivava com um som bem fraco.\nEle observava a noite que parecia ser curta.\nMesmo com o frio, a pelagem da raposa era dura.\nTodos os animais ficaram em um abrigo perigoso.",
+                        hint: "Substitua: 1. GELADO -> QUENTE | 2. FORTE -> FRACO | 3. LONGA -> CURTA | 4. MACIA -> DURA | 5. SEGURO -> PERIGOSO."
+                    },
+                    {
+                        lines: [
+                            "Na grande fazenda, o dia começou muito <span class='text-brandPink underline font-extrabold'>CEDO</span>.",
+                            "Os pintinhos seguiam a galinha de forma <span class='text-brandPink underline font-extrabold'>LENTA</span>.",
+                            "Eles procuravam comida no chão que estava <span class='text-brandPink underline font-extrabold'>SECO</span>.",
+                            "O fazendeiro abriu o portão de madeira <span class='text-brandPink underline font-extrabold'>GRANDE</span>.",
+                            "A rotina na roça trazia um trabalho bem <span class='text-brandPink underline font-extrabold'>FÁCIL</span>."
+                        ],
+                        targets: [
+                            { original: "cedo", antonyms: ["tarde"] },
+                            { original: "lenta", antonyms: ["rapida", "rápida"] },
+                            { original: "seco", antonyms: ["molhado", "humido"] },
+                            { original: "grande", antonyms: ["pequeno", "pequenino"] },
+                            { original: "fácil", antonyms: ["dificil", "difícil"] }
+                        ],
+                        keywords: ["fazenda", "pintinhos", "comida", "fazendeiro", "rotina"],
+                        exampleSolution: "Na grande fazenda, o dia começou muito tarde.\nOs pintinhos seguiam a galinha de forma rápida.\nEles procuravam comida no chão que estava molhado.\nO fazendeiro abriu o portão de madeira pequeno.\nA rotina na roça trazia um trabalho bem difícil.",
+                        hint: "Substitua: 1. CEDO -> TARDE | 2. LENTA -> RÁPIDA | 3. SECO -> MOLHADO | 4. GRANDE -> PEQUENO | 5. FÁCIL -> DIFÍCIL."
+                    }
+                ]
+            },
+
+            // -------------------------------------------------------------
+            // LIVRO 2: REINO DOS CONTOS DE FADAS (5 Adjetivos por texto - 1 por linha)
+            // -------------------------------------------------------------
+            {
+                id: 2,
+                title: "🏰 Reino dos Contos",
+                pages: [
+                    {
+                        lines: [
+                            "Era uma vez um reino cercado por montanhas <span class='text-brandPink underline font-extrabold'>ALTAS</span>.",
+                            "O rei que governava o castelo era muito <span class='text-brandPink underline font-extrabold'>RICO</span>.",
+                            "Ele morava em um palácio imenso e <span class='text-brandPink underline font-extrabold'>LUXUOSO</span>.",
+                            "Porém, a bruxa da floresta era bastante <span class='text-brandPink underline font-extrabold'>MALVADA</span>.",
+                            "Ela vivia planejando feitiços em sua caverna <span class='text-brandPink underline font-extrabold'>ESCURA</span>."
+                        ],
+                        targets: [
+                            { original: "altas", antonyms: ["baixas"] },
+                            { original: "rico", antonyms: ["pobre"] },
+                            { original: "luxuoso", antonyms: ["simples", "humilde"] },
+                            { original: "malvada", antonyms: ["bondosa", "boa"] },
+                            { original: "escura", antonyms: ["clara", "iluminada"] }
+                        ],
+                        keywords: ["reino", "rei", "palacio", "bruxa", "feitiços"],
+                        exampleSolution: "Era uma vez um reino cercado por montanhas baixas.\nO rei que governava o castelo era muito pobre.\nEle morava em um palácio imenso e simples.\nPorém, a bruxa da floresta era bastante bondosa.\nEla vivia planejando feitiços em sua caverna clara.",
+                        hint: "Substitua: 1. ALTAS -> BAIXAS | 2. RICO -> POBRE | 3. LUXUOSO -> SIMPLES | 4. MALVADA -> BONDOSA | 5. ESCURA -> CLARA."
+                    },
+                    {
+                        lines: [
+                            "No dia da festa, o salão estava bastante <span class='text-brandPink underline font-extrabold'>CHEIO</span>.",
+                            "O cavaleiro usava uma armadura resistente e <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "Sua espada reluzia com um brilho muito <span class='text-brandPink underline font-extrabold'>BONITO</span>.",
+                            "Contudo, a princesa parecia estar muito <span class='text-brandPink underline font-extrabold'>TRISTE</span>.",
+                            "Ela queria passear pelo jardim em um dia <span class='text-brandPink underline font-extrabold'>CALMO</span>."
+                        ],
+                        targets: [
+                            { original: "cheio", antonyms: ["vazio"] },
+                            { original: "forte", antonyms: ["fraca", "fraco"] },
+                            { original: "bonito", antonyms: ["feio"] },
+                            { original: "triste", antonyms: ["feliz", "alegre"] },
+                            { original: "calmo", antonyms: ["agitado"] }
+                        ],
+                        keywords: ["festa", "cavaleiro", "espada", "princesa", "jardim"],
+                        exampleSolution: "No dia da festa, o salão estava bastante vazio.\nO cavaleiro usava uma armadura resistente e fraca.\nSua espada reluzia com um brilho muito feio.\nContudo, a princesa parecia estar muito feliz.\nEla queria passear pelo jardim em um dia agitado.",
+                        hint: "Substitua: 1. CHEIO -> VAZIO | 2. FORTE -> FRACO | 3. BONITO -> FEIO | 4. TRISTE -> FELIZ | 5. CALMO -> AGITADO."
+                    },
+                    {
+                        lines: [
+                            "A noite caiu suavemente na floresta <span class='text-brandPink underline font-extrabold'>SILENCIOSA</span>.",
+                            "A grande porta de madeira estava <span class='text-brandPink underline font-extrabold'>FECHADA</span>.",
+                            "Os guardas usavam capacetes de metal <span class='text-brandPink underline font-extrabold'>PESADO</span>.",
+                            "Na montanha, vivia um dragão de olhar <span class='text-brandPink underline font-extrabold'>FEIO</span>.",
+                            "Sua respiração lançava uma fumaça muito <span class='text-brandPink underline font-extrabold'>QUENTE</span>."
+                        ],
+                        targets: [
+                            { original: "silenciosa", antonyms: ["barulhenta"] },
+                            { original: "fechada", antonyms: ["aberta"] },
+                            { original: "pesado", antonyms: ["leve"] },
+                            { original: "feio", antonyms: ["bonito", "lindo"] },
+                            { original: "quente", antonyms: ["fria"] }
+                        ],
+                        keywords: ["noite", "porta", "guardas", "dragao", "fumaça"],
+                        exampleSolution: "A noite caiu suavemente na floresta barulhenta.\nA grande porta de madeira estava aberta.\nOs guardas usavam capacetes de metal leve.\nNa montanha, vivia um dragão de olhar bonito.\nSua respiração lançava uma fumaça muito fria.",
+                        hint: "Substitua: 1. SILENCIOSA -> BARULHENTA | 2. FECHADA -> ABERTA | 3. PESADO -> LEVE | 4. FEIO -> BONITO | 5. QUENTE -> FRIA."
+                    },
+                    {
+                        lines: [
+                            "O príncipe iniciou uma viagem bastante <span class='text-brandPink underline font-extrabold'>PERIGOSA</span>.",
+                            "Todos sabiam que ele era um jovem <span class='text-brandPink underline font-extrabold'>CORAJOSO</span>.",
+                            "Ele cavalgou até encontrar uma mata <span class='text-brandPink underline font-extrabold'>ESCURA</span>.",
+                            "As árvores no caminho eram muito <span class='text-brandPink underline font-extrabold'>GROSSAS</span>.",
+                            "Ele continuou firme porque sua fé era <span class='text-brandPink underline font-extrabold'>GRANDE</span>."
+                        ],
+                        targets: [
+                            { original: "perigosa", antonyms: ["segura", "tranquila"] },
+                            { original: "corajoso", antonyms: ["medroso", "covarde"] },
+                            { original: "escura", antonyms: ["clara", "iluminada"] },
+                            { original: "grossas", antonyms: ["finas"] },
+                            { original: "grande", antonyms: ["pequena"] }
+                        ],
+                        keywords: ["principe", "jovem", "mata", "arvores", "caminho"],
+                        exampleSolution: "O príncipe iniciou uma viagem bastante segura.\nTodos sabiam que ele era um jovem medroso.\nEle cavalgou até encontrar uma mata clara.\nAs árvores no caminho eram muito finas.\nEle continuou firme porque sua fé era pequena.",
+                        hint: "Substitua: 1. PERIGOSA -> SEGURA | 2. CORAJOSO -> MEDROSO | 3. ESCURA -> CLARA | 4. GROSSAS -> FINAS | 5. GRANDE -> PEQUENA."
+                    },
+                    {
+                        lines: [
+                            "A rainha caminhou majestosa pelo salão <span class='text-brandPink underline font-extrabold'>LIMPO</span>.",
+                            "Seu belo vestido de seda parecia bem <span class='text-brandPink underline font-extrabold'>NOVO</span>.",
+                            "Os súditos demonstravam um afeto muito <span class='text-brandPink underline font-extrabold'>SINCERO</span>.",
+                            "O gigante na ponte era incrivelmente <span class='text-brandPink underline font-extrabold'>ALTO</span>.",
+                            "Apesar da força, seu coração parecia <span class='text-brandPink underline font-extrabold'>BOM</span>."
+                        ],
+                        targets: [
+                            { original: "limpo", antonyms: ["sujo"] },
+                            { original: "novo", antonyms: ["velho", "antigo"] },
+                            { original: "sincero", antonyms: ["falso"] },
+                            { original: "alto", antonyms: ["baixo"] },
+                            { original: "bom", antonyms: ["mau", "ruim"] }
+                        ],
+                        keywords: ["rainha", "vestido", "suditos", "gigante", "coracao"],
+                        exampleSolution: "A rainha caminhou majestosa pelo salão sujo.\nSeu belo vestido de seda parecia bem velho.\nOs súditos demonstravam um afeto muito falso.\nO gigante na ponte era incrivelmente baixo.\nApesar da força, seu coração parecia ruim.",
+                        hint: "Substitua: 1. LIMPO -> SUJO | 2. NOVO -> VELHO | 3. SINCERO -> FALSO | 4. ALTO -> BAIXO | 5. BOM -> RUIM."
+                    },
+                    {
+                        lines: [
+                            "A fada apareceu em uma luz muito <span class='text-brandPink underline font-extrabold'>BRILHANTE</span>.",
+                            "Ela transformou a sala em um lugar <span class='text-brandPink underline font-extrabold'>BONITO</span>.",
+                            "As flores no vaso pareciam estar <span class='text-brandPink underline font-extrabold'>FRESCAS</span>.",
+                            "Antes da magia, o chalé de madeira era <span class='text-brandPink underline font-extrabold'>POBRE</span>.",
+                            "Agora tudo brilhava em um clima <span class='text-brandPink underline font-extrabold'>MARAVILHOSO</span>."
+                        ],
+                        targets: [
+                            { original: "brilhante", antonyms: ["fosca", "opaca"] },
+                            { original: "bonito", antonyms: ["feio"] },
+                            { original: "frescas", antonyms: ["murchas", "secas"] },
+                            { original: "pobre", antonyms: ["rico"] },
+                            { original: "maravilhoso", antonyms: ["horrivel", "horrível"] }
+                        ],
+                        keywords: ["fada", "sala", "flores", "chale", "clima"],
+                        exampleSolution: "A fada apareceu em uma luz muito opaca.\nEla transformou a sala em um lugar feio.\nAs flores no vaso pareciam estar murchas.\nAntes da magia, o chalé de madeira era rico.\nAgora tudo brilhava em um clima horrível.",
+                        hint: "Substitua: 1. BRILHANTE -> OPACA | 2. BONITO -> FEIO | 3. FRESCAS -> MURCHAS | 4. POBRE -> RICO | 5. MARAVILHOSO -> HORRÍVEL."
+                    },
+                    {
+                        lines: [
+                            "O duende cuidava da ponte de maneira <span class='text-brandPink underline font-extrabold'>CUIDADOSA</span>.",
+                            "Geralmente, ele se comportava de forma <span class='text-brandPink underline font-extrabold'>BONDOSA</span>.",
+                            "Ajudava as pessoas a carregar sacos <span class='text-brandPink underline font-extrabold'>PESADOS</span>.",
+                            "Hoje, a estrada do reino continuava <span class='text-brandPink underline font-extrabold'>FECHADA</span>.",
+                            "A viagem até a vila parecia ser bem <span class='text-brandPink underline font-extrabold'>LONGA</span>."
+                        ],
+                        targets: [
+                            { original: "cuidadosa", antonyms: ["descuidada"] },
+                            { original: "bondosa", antonyms: ["malvada", "ruim"] },
+                            { original: "pesados", antonyms: ["leves"] },
+                            { original: "fechada", antonyms: ["aberta"] },
+                            { original: "longa", antonyms: ["curta"] }
+                        ],
+                        keywords: ["duende", "comportava", "sacos", "estrada", "viagem"],
+                        exampleSolution: "O duende cuidava da ponte de maneira descuidada.\nGeralmente, ele se comportava de forma malvada.\nAjudava as pessoas a carregar sacos leves.\nHoje, a estrada do reino continuava aberta.\nA viagem até a vila parecia ser bem curta.",
+                        hint: "Substitua: 1. CUIDADOSA -> DESCUIDADA | 2. BONDOSA -> MALVADA | 3. PESADOS -> LEVES | 4. FECHADA -> ABERTA | 5. LONGA -> CURTA."
+                    },
+                    {
+                        lines: [
+                            "O bobo da corte era um homem muito <span class='text-brandPink underline font-extrabold'>ENGRAÇADO</span>.",
+                            "Suas brincadeiras deixavam a princesa <span class='text-brandPink underline font-extrabold'>FELIZ</span>.",
+                            "Risadas ecoavam no salão de pedra <span class='text-brandPink underline font-extrabold'>FRIEZA</span>.",
+                            "Do lado de fora, a noite continuava <span class='text-brandPink underline font-extrabold'>CLARA</span>.",
+                            "O céu estrelado parecia incrivelmente <span class='text-brandPink underline font-extrabold'>AMPLO</span>."
+                        ],
+                        targets: [
+                            { original: "engraçado", antonyms: ["chato", "sem graca"] },
+                            { original: "feliz", antonyms: ["triste"] },
+                            { original: "frieza", antonyms: ["quente"] },
+                            { original: "clara", antonyms: ["escura"] },
+                            { original: "amplo", antonyms: ["estreito", "pequeno"] }
+                        ],
+                        keywords: ["bobo", "princesa", "salao", "noite", "ceu"],
+                        exampleSolution: "O bobo da corte era um homem muito chato.\nSuas brincadeiras deixavam a princesa triste.\nRisadas ecoavam no salão de pedra quente.\nDo lado de fora, a noite continuava escura.\nO céu estrelado parecia incrivelmente estreito.",
+                        hint: "Substitua: 1. ENGRAÇADO -> CHATO | 2. FELIZ -> TRISTE | 3. FRIEZA -> QUENTE | 4. CLARA -> ESCURA | 5. AMPLO -> ESTREITO."
+                    },
+                    {
+                        lines: [
+                            "O cavaleiro enfrentou o dragão no morro <span class='text-brandPink underline font-extrabold'>GELADO</span>.",
+                            "Ele mostrou que não era um jovem <span class='text-brandPink underline font-extrabold'>MEDROSO</span>.",
+                            "Lutou com coragem em uma batalha <span class='text-brandPink underline font-extrabold'>DIFÍCIL</span>.",
+                            "O monstro alado possuía uma força <span class='text-brandPink underline font-extrabold'>FRACA</span>.",
+                            "A vitória trouxe um momento muito <span class='text-brandPink underline font-extrabold'>DOCE</span>."
+                        ],
+                        targets: [
+                            { original: "gelado", antonyms: ["quente"] },
+                            { original: "medroso", antonyms: ["corajoso"] },
+                            { original: "difícil", antonyms: ["facil", "fácil"] },
+                            { original: "fraca", antonyms: ["forte"] },
+                            { original: "doce", antonyms: ["amargo"] }
+                        ],
+                        keywords: ["cavaleiro", "jovem", "batalha", "monstro", "vitoria"],
+                        exampleSolution: "O cavaleiro enfrentou o dragão no morro quente.\nEle mostrou que não era um jovem corajoso.\nLutou com coragem em uma batalha fácil.\nO monstro alado possuía uma força forte.\nA vitória trouxe um momento muito amargo.",
+                        hint: "Substitua: 1. GELADO -> QUENTE | 2. MEDROSO -> CORAJOSO | 3. DIFÍCIL -> FÁCIL | 4. FRACA -> FORTE | 5. DOCE -> AMARGO."
+                    },
+                    {
+                        lines: [
+                            "A carruagem de cristal era muito <span class='text-brandPink underline font-extrabold'>RÁPIDA</span>.",
+                            "O traje do jovem príncipe estava <span class='text-brandPink underline font-extrabold'>SUJO</span>.",
+                            "Ele cavalgou por uma estrada bastante <span class='text-brandPink underline font-extrabold'>SECA</span>.",
+                            "O rei deu ao filho um abraço bem <span class='text-brandPink underline font-extrabold'>QUENTE</span>.",
+                            "A festa de comemoração foi incrivelmente <span class='text-brandPink underline font-extrabold'>BOA</span>."
+                        ],
+                        targets: [
+                            { original: "rápida", antonyms: ["lenta", "devagar"] },
+                            { original: "sujo", antonyms: ["limpo"] },
+                            { original: "seca", antonyms: ["molhada", "humida"] },
+                            { original: "quente", antonyms: ["frio", "gelado"] },
+                            { original: "boa", antonyms: ["ruim", "pessima"] }
+                        ],
+                        keywords: ["carruagem", "traje", "estrada", "rei", "festa"],
+                        exampleSolution: "A carruagem de cristal era muito lenta.\nO traje do jovem príncipe estava limpo.\nEle cavalgou por uma estrada bastante molhada.\nO rei deu ao filho um abraço bem frio.\nA festa de comemoração foi incrivelmente ruim.",
+                        hint: "Substitua: 1. RÁPIDA -> LENTA | 2. SUJO -> LIMPO | 3. SECA -> MOLHADA | 4. QUENTE -> FRIO | 5. BOA -> RUIM."
+                    }
+                ]
+            },
+
+            // -------------------------------------------------------------
+            // LIVRO 3: VIAGEM ESPACIAL (5 Adjetivos por texto - 1 por linha)
+            // -------------------------------------------------------------
+            {
+                id: 3,
+                title: "🚀 Viagem Espacial",
+                pages: [
+                    {
+                        lines: [
+                            "A contagem regressiva começou no dia <span class='text-brandPink underline font-extrabold'>CLARO</span>.",
+                            "O potente foguete prateado era muito <span class='text-brandPink underline font-extrabold'>GRANDE</span>.",
+                            "A nave subiu ao céu de forma bastante <span class='text-brandPink underline font-extrabold'>RÁPIDA</span>.",
+                            "A viagem pelo universo parecia bem <span class='text-brandPink underline font-extrabold'>LONGA</span>.",
+                            "Os astronautas sentiam um orgulho <span class='text-brandPink underline font-extrabold'>ENORME</span>."
+                        ],
+                        targets: [
+                            { original: "claro", antonyms: ["escuro", "nublado"] },
+                            { original: "grande", antonyms: ["pequeno", "pequenino"] },
+                            { original: "rápida", antonyms: ["lenta", "devagar"] },
+                            { original: "longa", antonyms: ["curta"] },
+                            { original: "enorme", antonyms: ["pequeno", "minúsculo"] }
+                        ],
+                        keywords: ["contagem", "foguete", "nave", "viagem", "astronautas"],
+                        exampleSolution: "A contagem regressiva começou no dia escuro.\nO potente foguete prateado era muito pequeno.\nA nave subiu ao céu de forma bastante lenta.\nA viagem pelo universo parecia bem curta.\nOs astronautas sentiam um orgulho pequeno.",
+                        hint: "Substitua: 1. CLARO -> ESCURO | 2. GRANDE -> PEQUENO | 3. RÁPIDA -> LENTA | 4. LONGA -> CURTA | 5. ENORME -> PEQUENO."
+                    },
+                    {
+                        lines: [
+                            "A nave chegou a um planeta bastante <span class='text-brandPink underline font-extrabold'>DISTANTE</span>.",
+                            "A superfície desse mundo parecia muito <span class='text-brandPink underline font-extrabold'>FRIA</span>.",
+                            "Paredes de gelo refletiam uma luz <span class='text-brandPink underline font-extrabold'>FRACO</span>.",
+                            "O céu ao redor continuava extremamente <span class='text-brandPink underline font-extrabold'>ESCURO</span>.",
+                            "A caminhada na superfície foi bem <span class='text-brandPink underline font-extrabold'>CALMA</span>."
+                        ],
+                        targets: [
+                            { original: "distante", antonyms: ["proximo", "próximo", "perto"] },
+                            { original: "fria", antonyms: ["quente"] },
+                            { original: "fraco", antonyms: ["forte"] },
+                            { original: "escuro", antonyms: ["claro", "iluminado"] },
+                            { original: "calma", antonyms: ["agitada", "perigosa"] }
+                        ],
+                        keywords: ["nave", "superficie", "paredes", "ceu", "caminhada"],
+                        exampleSolution: "A nave chegou a um planeta bastante próximo.\nA superfície desse mundo parecia muito quente.\nParedes de gelo refletiam uma luz forte.\nO céu ao redor continuava extremamente claro.\nA caminhada na superfície foi bem agitada.",
+                        hint: "Substitua: 1. DISTANTE -> PRÓXIMO | 2. FRIA -> QUENTE | 3. FRACO -> FORTE | 4. ESCURO -> CLARO | 5. CALMA -> AGITADA."
+                    },
+                    {
+                        lines: [
+                            "O laboratório espacial era um lugar <span class='text-brandPink underline font-extrabold'>MODERNO</span>.",
+                            "O robô principal feito de aço era <span class='text-brandPink underline font-extrabold'>PESADO</span>.",
+                            "Sua estrutura metálica parecia bem <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "Ele executava os comandos de modo <span class='text-brandPink underline font-extrabold'>CERTO</span>.",
+                            "Sua bateria durava por um tempo <span class='text-brandPink underline font-extrabold'>LONGO</span>."
+                        ],
+                        targets: [
+                            { original: "moderno", antonyms: ["antigo", "velho"] },
+                            { original: "pesado", antonyms: ["leve"] },
+                            { original: "forte", antonyms: ["fraca", "fraco"] },
+                            { original: "certo", antonyms: ["errado"] },
+                            { original: "longo", antonyms: ["curto"] }
+                        ],
+                        keywords: ["laboratorio", "robo", "estrutura", "comandos", "bateria"],
+                        exampleSolution: "O laboratório espacial era um lugar antigo.\nO robô principal feito de aço era leve.\nSua estrutura metálica parecia bem fraca.\nEle executava os comandos de modo errado.\nSua bateria durava por um tempo curto.",
+                        hint: "Substitua: 1. MODERNO -> ANTIGO | 2. PESADO -> LEVE | 3. FORTE -> FRACO | 4. CERTO -> ERRADO | 5. LONGO -> CURTO."
+                    },
+                    {
+                        lines: [
+                            "Pelo telescópio, os cientistas viram uma luz <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "A foto revelou uma estrela azul muito <span class='text-brandPink underline font-extrabold'>LINDA</span>.",
+                            "Sua temperatura interna devia ser <span class='text-brandPink underline font-extrabold'>QUENTE</span>.",
+                            "A distância até a Terra era incrivelmente <span class='text-brandPink underline font-extrabold'>ALTA</span>.",
+                            "A descoberta trouxe um sentimento bastante <span class='text-brandPink underline font-extrabold'>BOM</span>."
+                        ],
+                        targets: [
+                            { original: "forte", antonyms: ["fraca"] },
+                            { original: "linda", antonyms: ["feia"] },
+                            { original: "quente", antonyms: ["fria"] },
+                            { original: "alta", antonyms: ["baixa"] },
+                            { original: "bom", antonyms: ["ruim", "pessimo"] }
+                        ],
+                        keywords: ["telescopio", "foto", "temperatura", "distancia", "descoberta"],
+                        exampleSolution: "Pelo telescópio, os cientistas viram uma luz fraca.\nA foto revelou uma estrela azul muito feia.\nSua temperatura interna devia ser fria.\nA distância até a Terra era incrivelmente baixa.\nA descoberta trouxe um sentimento bastante ruim.",
+                        hint: "Substitua: 1. FORTE -> FRACA | 2. LINDA -> FEIA | 3. QUENTE -> FRIA | 4. ALTA -> BAIXA | 5. BOM -> RUIM."
+                    },
+                    {
+                        lines: [
+                            "Um meteoro passou perto da órbita <span class='text-brandPink underline font-extrabold'>LUNAR</span>.",
+                            "A rocha voadora parecia ser bastante <span class='text-brandPink underline font-extrabold'>DURA</span>.",
+                            "Sua velocidade no espaço era muito <span class='text-brandPink underline font-extrabold'>RÁPIDA</span>.",
+                            "A aproximação pareceu uma ameaça <span class='text-brandPink underline font-extrabold'>PERIGOSA</span>.",
+                            "Os escudos deixaram a estação em clima <span class='text-brandPink underline font-extrabold'>SEGURO</span>."
+                        ],
+                        targets: [
+                            { original: "lunar", antonyms: ["terrestre"] },
+                            { original: "dura", antonyms: ["macia", "mole"] },
+                            { original: "rápida", antonyms: ["lenta", "devagar"] },
+                            { original: "perigosa", antonyms: ["tranquila", "segura"] },
+                            { original: "seguro", antonyms: ["perigoso"] }
+                        ],
+                        keywords: ["meteoro", "rocha", "velocidade", "aproximacao", "escudos"],
+                        exampleSolution: "Um meteoro passou perto da órbita terrestre.\nA rocha voadora parecia ser bastante macia.\nSua velocidade no espaço era muito lenta.\nA aproximação pareceu uma ameaça tranquila.\nOs escudos deixaram a estação em clima perigoso.",
+                        hint: "Substitua: 1. LUNAR -> TERRESTRE | 2. DURA -> MACIA | 3. RÁPIDA -> LENTA | 4. PERIGOSA -> TRANQUILA | 5. SEGURO -> PERIGOSO."
+                    },
+                    {
+                        lines: [
+                            "O novo painel solar chegou da fábrica <span class='text-brandPink underline font-extrabold'>TERRESTRE</span>.",
+                            "O equipamento instalado era totalmente <span class='text-brandPink underline font-extrabold'>NOVO</span>.",
+                            "Sua capacidade de captação era bem <span class='text-brandPink underline font-extrabold'>ALTA</span>.",
+                            "Por causa do material, o aparelho era <span class='text-brandPink underline font-extrabold'>CARO</span>.",
+                            "Os engenheiros concluíram a montagem <span class='text-brandPink underline font-extrabold'>FÁCIL</span>."
+                        ],
+                        targets: [
+                            { original: "terrestre", antonyms: ["espacial"] },
+                            { original: "novo", antonyms: ["velho", "antigo"] },
+                            { original: "alta", antonyms: ["baixa"] },
+                            { original: "caro", antonyms: ["barato"] },
+                            { original: "fácil", antonyms: ["dificil", "difícil"] }
+                        ],
+                        keywords: ["painel", "equipamento", "capacidade", "aparelho", "engenheiros"],
+                        exampleSolution: "O novo painel solar chegou da fábrica espacial.\nO equipamento instalado era totalmente velho.\nSua capacidade de captação era bem baixa.\nPor causa do material, o aparelho era barato.\nOs engenheiros concluíram a montagem difícil.",
+                        hint: "Substitua: 1. TERRESTRE -> ESPACIAL | 2. NOVO -> VELHO | 3. ALTA -> BAIXA | 4. CARO -> BARATO | 5. FÁCIL -> DIFÍCIL."
+                    },
+                    {
+                        lines: [
+                            "Em Saturno, a equipe viu uma criatura <span class='text-brandPink underline font-extrabold'>RARA</span>.",
+                            "O extraterrestre tinha um corpo bem <span class='text-brandPink underline font-extrabold'>PEQUENO</span>.",
+                            "Ele se aproximou com um olhar <span class='text-brandPink underline font-extrabold'>CURIOSO</span>.",
+                            "Sua atitude durante a visita foi bastante <span class='text-brandPink underline font-extrabold'>CALMA</span>.",
+                            "O encontro no planeta foi totalmente <span class='text-brandPink underline font-extrabold'>PACÍFICO</span>."
+                        ],
+                        targets: [
+                            { original: "rara", antonyms: ["comum"] },
+                            { original: "pequeno", antonyms: ["grande"] },
+                            { original: "curioso", antonyms: ["desinteressado"] },
+                            { original: "calma", antonyms: ["agitada", "brava"] },
+                            { original: "pacífico", antonyms: ["violento", "agitado"] }
+                        ],
+                        keywords: ["saturno", "extraterrestre", "olhar", "atitude", "encontro"],
+                        exampleSolution: "Em Saturno, a equipe viu uma criatura comum.\nO extraterrestre tinha um corpo bem grande.\nEle se aproximou com um olhar desinteressado.\nSua atitude durante a visita foi bastante agitada.\nO encontro no planeta foi totalmente violento.",
+                        hint: "Substitua: 1. RARA -> COMUM | 2. PEQUENO -> GRANDE | 3. CURIOSO -> DESINTERESSADO | 4. CALMA -> AGITADA | 5. PACÍFICO -> VIOLENTO."
+                    },
+                    {
+                        lines: [
+                            "A sala de suprimentos da nave era <span class='text-brandPink underline font-extrabold'>AMPLA</span>.",
+                            "A prateleira de comida permanecia <span class='text-brandPink underline font-extrabold'>CHEIA</span>.",
+                            "O comandante mantinha a porta bem <span class='text-brandPink underline font-extrabold'>FECHADA</span>.",
+                            "De noite, a cabine ficava muito <span class='text-brandPink underline font-extrabold'>SILENCIOSA</span>.",
+                            "As luzes azuis davam um aspecto <span class='text-brandPink underline font-extrabold'>AGRADÁVEL</span>."
+                        ],
+                        targets: [
+                            { original: "ampla", antonyms: ["estreita", "pequena"] },
+                            { original: "cheia", antonyms: ["vazia"] },
+                            { original: "fechada", antonyms: ["aberta"] },
+                            { original: "silenciosa", antonyms: ["barulhenta"] },
+                            { original: "agradável", antonyms: ["desagradavel", "desagradável"] }
+                        ],
+                        keywords: ["sala", "prateleira", "comandante", "cabine", "luzes"],
+                        exampleSolution: "A sala de suprimentos da nave era estreita.\nA prateleira de comida permanecia vazia.\nO comandante mantinha a porta bem aberta.\nDe noite, a cabine ficava muito barulhenta.\nAs luzes azuis davam um aspecto desagradável.",
+                        hint: "Substitua: 1. AMPLA -> ESTREITA | 2. CHEIA -> VAZIA | 3. FECHADA -> ABERTA | 4. SILENCIOSA -> BARULHENTA | 5. AGRADÁVEL -> DESAGRADÁVEL."
+                    },
+                    {
+                        lines: [
+                            "O cabo de proteção era feito de metal <span class='text-brandPink underline font-extrabold'>DURO</span>.",
+                            "Para facilitar o movimento, ele era <span class='text-brandPink underline font-extrabold'>COMPRIDO</span>.",
+                            "O aparelho de medir poeira era muito <span class='text-brandPink underline font-extrabold'>ÚTIL</span>.",
+                            "O astronauta fez um trabalho bastante <span class='text-brandPink underline font-extrabold'>LIMPO</span>.",
+                            "A missão no espaço foi um sucesso <span class='text-brandPink underline font-extrabold'>COMPLETO</span>."
+                        ],
+                        targets: [
+                            { original: "duro", antonyms: ["macio", "mole"] },
+                            { original: "comprido", antonyms: ["curto"] },
+                            { original: "útil", antonyms: ["inutil", "inútil"] },
+                            { original: "limpo", antonyms: ["sujo"] },
+                            { original: "completo", antonyms: ["incompleto"] }
+                        ],
+                        keywords: ["cabo", "movimento", "aparelho", "astronauta", "missao"],
+                        exampleSolution: "O cabo de proteção era feito de metal macio.\nPara facilitar o movimento, ele era curto.\nO aparelho de medir poeira era muito inútil.\nO astronauta fez um trabalho bastante sujo.\nA missão no espaço foi um sucesso incompleto.",
+                        hint: "Substitua: 1. DURO -> MACIO | 2. COMPRIDO -> CURTO | 3. ÚTIL -> INÚTIL | 4. LIMPO -> SUJO | 5. COMPLETO -> INCOMPLETO."
+                    },
+                    {
+                        lines: [
+                            "A caminhada fora da nave parecia <span class='text-brandPink underline font-extrabold'>FÁCIL</span>.",
+                            "Os astronautas boiavam em um céu <span class='text-brandPink underline font-extrabold'>LIMPO</span>.",
+                            "A sensação de flutuar era bem <span class='text-brandPink underline font-extrabold'>DIVERTIDA</span>.",
+                            "Eles tiravam fotos com uma máquina <span class='text-brandPink underline font-extrabold'>NOVA</span>.",
+                            "Eles voltaram com uma lembrança <span class='text-brandPink underline font-extrabold'>BOA</span>."
+                        ],
+                        targets: [
+                            { original: "fácil", antonyms: ["dificil", "difícil"] },
+                            { original: "limpo", antonyms: ["sujo", "poluido"] },
+                            { original: "divertida", antonyms: ["chata", "tediosa"] },
+                            { original: "nova", antonyms: ["velha", "antiga"] },
+                            { original: "boa", antonyms: ["ruim", "pessima"] }
+                        ],
+                        keywords: ["caminhada", "astronautas", "sensacao", "fotos", "lembranca"],
+                        exampleSolution: "A caminhada fora da nave parecia difícil.\nOs astronautas boiavam em um céu sujo.\nA sensação de flutuar era bem chata.\nEles tiravam fotos com uma máquina velha.\nEles voltaram com uma lembrança ruim.",
+                        hint: "Substitua: 1. FÁCIL -> DIFÍCIL | 2. LIMPO -> SUJO | 3. DIVERTIDA -> CHATA | 4. NOVA -> VELHA | 5. BOA -> RUIM."
+                    }
+                ]
+            },
+
+            // -------------------------------------------------------------
+            // LIVRO 4: CIDADE FANTASMA (5 Adjetivos por texto - 1 por linha)
+            // -------------------------------------------------------------
+            {
+                id: 4,
+                title: "🕵️ Cidade Fantasma",
+                pages: [
+                    {
+                        lines: [
+                            "No topo do morro havia uma casa bastante <span class='text-brandPink underline font-extrabold'>ANTIGA</span>.",
+                            "A varanda de madeira parecia muito <span class='text-brandPink underline font-extrabold'>SUJA</span>.",
+                            "As janelas do casarão estavam <span class='text-brandPink underline font-extrabold'>QUEBRADAS</span>.",
+                            "O detetive caminhava em um passo <span class='text-brandPink underline font-extrabold'>LENTO</span>.",
+                            "A noite na colina estava totalmente <span class='text-brandPink underline font-extrabold'>ESCURA</span>."
+                        ],
+                        targets: [
+                            { original: "antiga", antonyms: ["nova", "moderna"] },
+                            { original: "suja", antonyms: ["limpa"] },
+                            { original: "quebradas", antonyms: ["inteiras", "intactas"] },
+                            { original: "lento", antonyms: ["rapido", "rápido"] },
+                            { original: "escura", antonyms: ["clara", "iluminada"] }
+                        ],
+                        keywords: ["topo", "varanda", "janelas", "detetive", "noite"],
+                        exampleSolution: "No topo do morro havia uma casa bastante nova.\nA varanda de madeira parecia muito limpa.\nAs janelas do casarão estavam inteiras.\nO detetive caminhava em um passo rápido.\nA noite na colina estava totalmente clara.",
+                        hint: "Substitua: 1. ANTIGA -> NOVA | 2. SUJA -> LIMPA | 3. QUEBRADAS -> INTEIRAS | 4. LENTO -> RÁPIDO | 5. ESCURA -> CLARA."
+                    },
+                    {
+                        lines: [
+                            "O investigador usava uma lanterna bem <span class='text-brandPink underline font-extrabold'>FORTE</span>.",
+                            "Todos diziam que o jovem era muito <span class='text-brandPink underline font-extrabold'>ESPERTO</span>.",
+                            "Ele olhava as marcas no chão <span class='text-brandPink underline font-extrabold'>MOLHADO</span>.",
+                            "Ao ouvir um ruído, manteve-se <span class='text-brandPink underline font-extrabold'>CORAJOSO</span>.",
+                            "Ele seguiu em frente pelo corredor <span class='text-brandPink underline font-extrabold'>LONGO</span>."
+                        ],
+                        targets: [
+                            { original: "forte", antonyms: ["fraca", "fraco"] },
+                            { original: "esperto", antonyms: ["bobo", "ingenuo"] },
+                            { original: "molhado", antonyms: ["seco"] },
+                            { original: "corajoso", antonyms: ["medroso", "covarde"] },
+                            { original: "longo", antonyms: ["curto"] }
+                        ],
+                        keywords: ["investigador", "jovem", "marcas", "ruido", "corredor"],
+                        exampleSolution: "O investigador usava uma lanterna bem fraca.\nTodos diziam que o jovem era muito bobo.\nEle olhava as marcas no chão seco.\nAo ouvir um ruído, manteve-se medroso.\nEle seguiu em frente pelo corredor curto.",
+                        hint: "Substitua: 1. FORTE -> FRACA | 2. ESPERTO -> BOBO | 3. MOLHADO -> SECO | 4. CORAJOSO -> MEDROSO | 5. LONGO -> CURTO."
+                    },
+                    {
+                        lines: [
+                            "A trilha para o casarão parecia bem <span class='text-brandPink underline font-extrabold'>LONGA</span>.",
+                            "A passagem entre os galhos era muito <span class='text-brandPink underline font-extrabold'>ESTREITA</span>.",
+                            "O solo coberto de folhas estava <span class='text-brandPink underline font-extrabold'>SECO</span>.",
+                            "O vento da montanha soprava de forma <span class='text-brandPink underline font-extrabold'>GELADA</span>.",
+                            "O detetive tinha uma coragem bastante <span class='text-brandPink underline font-extrabold'>GRANDE</span>."
+                        ],
+                        targets: [
+                            { original: "longa", antonyms: ["curta"] },
+                            { original: "estreita", antonyms: ["larga", "ampla"] },
+                            { original: "seco", antonyms: ["molhado", "humido"] },
+                            { original: "gelada", antonyms: ["quente"] },
+                            { original: "grande", antonyms: ["pequena"] }
+                        ],
+                        keywords: ["trilha", "passagem", "solo", "vento", "detetive"],
+                        exampleSolution: "A trilha para o casarão parecia bem curta.\nA passagem entre os galhos era muito larga.\nO solo coberto de folhas estava molhado.\nO vento da montanha soprava de forma quente.\nO detetive tinha uma coragem bastante pequena.",
+                        hint: "Substitua: 1. LONGA -> CURTA | 2. ESTREITA -> LARGA | 3. SECO -> MOLHADO | 4. GELADA -> QUENTE | 5. GRANDE -> PEQUENA."
+                    }
+                ]
+            }
+        ];
+
+        let selectedBookIndex = 0;
+        let currentPage = 0;
+        let patientName = "";
+        let userAnswers = [];
+        let pageScores = [];
+
+        // Helper text normalizer
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        window.selectBook = function(index) {
+            selectedBookIndex = index;
+            document.querySelectorAll('.book-select-btn').forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.classList.add('border-brandPurple', 'bg-purple-50');
+                    btn.classList.remove('bg-white');
+                } else {
+                    btn.classList.remove('border-brandPurple', 'bg-purple-50');
+                    btn.classList.add('bg-white');
+                }
+            });
+        };
+
+        window.startActivity = function() {
+            const input = document.getElementById('patient-name-input').value.trim();
+            if (!input) {
+                alert("Por favor, digite o nome do estudante/paciente para iniciar.");
+                return;
+            }
+            patientName = input;
+            
+            const currentBook = booksCollection[selectedBookIndex];
+            userAnswers = new Array(currentBook.pages.length).fill("");
+            pageScores = new Array(currentBook.pages.length).fill(false);
+            currentPage = 0;
+
+            document.getElementById('display-patient-name').innerText = patientName;
+            document.getElementById('display-book-title').innerText = currentBook.title;
+            
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('book-screen').classList.remove('hidden');
+            renderPage();
+        };
+
+        function renderPage() {
+            const currentBook = booksCollection[selectedBookIndex];
+            const data = currentBook.pages[currentPage];
+
+            document.getElementById('page-indicator').innerText = `Texto ${currentPage + 1} de ${currentBook.pages.length}`;
+            const progressPercent = ((currentPage + 1) / currentBook.pages.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+            // Formatar texto em 5 linhas numeradas
+            const formattedLinesHtml = data.lines.map((line, idx) => 
+                `<p class="flex items-start gap-2"><span class="text-brandPurple font-bold text-xs bg-purple-100 px-2 py-0.5 rounded-full select-none">${idx + 1}</span><span>${line}</span></p>`
+            ).join('');
+
+            document.getElementById('original-sentence').innerHTML = formattedLinesHtml;
+            document.getElementById('hint-text').innerText = data.hint;
+            document.getElementById('hint-box').classList.add('hidden');
+
+            document.getElementById('instruction-label').innerText = "✏️ Reescreva o TEXTO COMPLETO trocando os adjetivos de TODAS as 5 linhas pelos seus OPOSTOS:";
+
+            document.getElementById('user-input').value = userAnswers[currentPage] || "";
+            hideFeedback();
+
+            document.getElementById('prev-btn').disabled = currentPage === 0;
+            document.getElementById('prev-btn').style.opacity = currentPage === 0 ? '0.5' : '1';
+
+            if (currentPage === currentBook.pages.length - 1) {
+                document.getElementById('next-btn-text').innerText = "Finalizar Livro";
+            } else {
+                document.getElementById('next-btn-text').innerText = "Próximo";
+            }
+        }
+
+        window.toggleHint = function() {
+            const hintBox = document.getElementById('hint-box');
+            hintBox.classList.toggle('hidden');
+        };
+
+        window.validateCurrentPage = function() {
+            const rawInput = document.getElementById('user-input').value.trim();
+            const normalizedInput = normalizeText(rawInput);
+            const currentBook = booksCollection[selectedBookIndex];
+            const data = currentBook.pages[currentPage];
+
+            userAnswers[currentPage] = rawInput;
+
+            if (!rawInput) {
+                showFeedback("⚠️ Por favor, reescreva o texto de 5 linhas trocando os adjetivos em destaque antes de verificar.", "warning");
+                return false;
+            }
+
+            // Validar presença dos antônimos esperados
+            let matchedAntonymsCount = 0;
+            data.targets.forEach(target => {
+                const hasMatch = target.antonyms.some(ant => normalizedInput.includes(normalizeText(ant)));
+                if (hasMatch) matchedAntonymsCount++;
+            });
+
+            // Verificar presença de palavras-chave do texto
+            const matchedKeywords = data.keywords.filter(kw => normalizedInput.includes(normalizeText(kw)));
+            const isFullSentence = matchedKeywords.length >= Math.ceil(data.keywords.length * 0.4);
+
+            const allAntonymsFound = matchedAntonymsCount === data.targets.length;
+
+            if (allAntonymsFound && !isFullSentence) {
+                showFeedback("👏 Você trocou os adjetivos! Mas lembre-se: é preciso reescrever o TEXTO COMPLETO (as 5 linhas) para treinar a escrita.", "warning");
+                pageScores[currentPage] = false;
+                return false;
+            }
+
+            if (matchedAntonymsCount < data.targets.length) {
+                showFeedback(`💡 Você encontrou ${matchedAntonymsCount} de ${data.targets.length} opostos. Verifique se todas as 5 linhas tiveram seus adjetivos alterados!`, "warning");
+                pageScores[currentPage] = false;
+                return false;
+            }
+
+            if (allAntonymsFound && isFullSentence) {
+                showFeedback("🎉 EXCELENTE! Você trocou os adjetivos de todas as 5 linhas e reescreveu o texto perfeito!", "correct");
+                pageScores[currentPage] = true;
+                
+                try {
+                    confetti({
+                        particleCount: 80,
+                        spread: 70,
+                        origin: { y: 0.7 }
+                    });
+                } catch(e) {}
+
+                return true;
+            }
+
+            showFeedback("🤔 Releia o texto e certifique-se de substituir o adjetivo de cada uma das 5 linhas pelo seu oposto.", "incorrect");
+            pageScores[currentPage] = false;
+            return false;
+        };
+
+        function showFeedback(message, type) {
+            const fb = document.getElementById('feedback');
+            fb.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-yellow-100', 'text-yellow-900', 'border-green-300', 'border-red-300', 'border-yellow-300', 'border-2');
+            
+            fb.innerText = message;
+
+            if (type === 'correct') {
+                fb.classList.add('bg-green-100', 'text-green-800', 'border-green-300', 'border-2');
+            } else if (type === 'incorrect') {
+                fb.classList.add('bg-red-100', 'text-red-800', 'border-red-300', 'border-2');
+            } else {
+                fb.classList.add('bg-yellow-100', 'text-yellow-900', 'border-yellow-300', 'border-2');
+            }
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback').classList.add('hidden');
+        }
+
+        window.changePage = function(direction) {
+            const currentBook = booksCollection[selectedBookIndex];
+            userAnswers[currentPage] = document.getElementById('user-input').value.trim();
+
+            if (direction === 1 && currentPage === currentBook.pages.length - 1) {
+                showReport();
+                return;
+            }
+
+            currentPage += direction;
+            if (currentPage < 0) currentPage = 0;
+            if (currentPage >= currentBook.pages.length) currentPage = currentBook.pages.length - 1;
+
+            renderPage();
+        };
+
+        function showReport() {
+            const currentBook = booksCollection[selectedBookIndex];
+            
+            document.getElementById('book-screen').classList.add('hidden');
+            document.getElementById('report-screen').classList.remove('hidden');
+
+            document.getElementById('report-patient-name').innerText = patientName;
+            document.getElementById('report-book-name').innerText = currentBook.title;
+            
+            const totalCorrect = pageScores.filter(s => s === true).length;
+            document.getElementById('report-score').innerText = `${totalCorrect} de ${currentBook.pages.length} textos corretos (${Math.round((totalCorrect/currentBook.pages.length)*100)}%)`;
+
+            const container = document.getElementById('report-content');
+            container.innerHTML = "";
+
+            currentBook.pages.forEach((data, idx) => {
+                const answer = userAnswers[idx] || "(Não respondeu)";
+                const isCorrect = pageScores[idx];
+                const cleanOriginal = data.lines.join(" ").replace(/<[^>]*>?/gm, '');
+                
+                const card = document.createElement('div');
+                card.className = `p-3.5 rounded-xl border-2 ${isCorrect ? 'bg-green-50/50 border-green-200' : 'bg-red-50/50 border-red-200'}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between font-bold text-xs uppercase mb-1">
+                        <span class="text-gray-500">Texto ${idx + 1}</span>
+                        <span class="${isCorrect ? 'text-green-700' : 'text-red-600'} font-bold">
+                            ${isCorrect ? '✅ Texto Correto' : '⚠️ Precisa Revisar'}
+                        </span>
+                    </div>
+                    <p class="text-xs font-semibold text-gray-600 mb-1"><strong>Texto Original:</strong> ${cleanOriginal}</p>
+                    <p class="text-xs sm:text-sm font-extrabold ${isCorrect ? 'text-green-900' : 'text-red-900'} my-1 whitespace-pre-line">
+                        <strong>Escrito pelo aluno:</strong>\n"${answer}"
+                    </p>
+                    <p class="text-xs font-bold text-gray-500 whitespace-pre-line">
+                        <strong>Exemplo correto:</strong>\n"${data.exampleSolution}"
+                    </p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.restartBook = function() {
+            currentPage = 0;
+            document.getElementById('report-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>
